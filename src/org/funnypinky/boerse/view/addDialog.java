@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.funnypinky.boerse.api.collectData;
+import org.funnypinky.boerse.structure.Company;
+import org.funnypinky.boerse.structure.Stock;
 
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -25,7 +27,7 @@ public class addDialog implements Initializable {
 	private TextField searchPattern;
 	
 	@FXML
-	private ListView<String> resultView;
+	private ListView<Company> resultView;
 	
 	private mainViewController parent;
 	
@@ -36,26 +38,21 @@ public class addDialog implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		resultView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		resultView.getSelectionModel().selectedItemProperty().addListener(
-		        (ObservableValue<? extends String> ov, String old_val,
-		                String new_val) -> {
-		                	selectedSymbol = new_val;
-		                });
 	}
 	
 	@FXML
 	public void add(ActionEvent event) {
-		
+		Company company = collectData.getCompanyData(resultView.getSelectionModel().getSelectedItem().getSymbol());
+		this.parent.getStockMap().put(company, new Stock());
 	}
 	
 	@FXML
 	public void search(ActionEvent event) {
 		Map<String, String> result = collectData.getSearchResult(searchPattern.getText());
 		if(!result.isEmpty()) {
+			resultView.getItems().clear();
 			result.forEach((key,item) ->{
-				StringBuilder line = new StringBuilder();
-				line.append(item).append(" (Symbol: ").append(key).append(")");
-				resultView.getItems().add(line.toString());
+				resultView.getItems().add(new Company(key,item));
 			});
 		}
 	}

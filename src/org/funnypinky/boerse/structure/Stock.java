@@ -11,5 +11,6 @@ public class Stock {
 	
 	private HashMap<LocalDateTime, Buy> buyHistory;
 	
+	
 
 }

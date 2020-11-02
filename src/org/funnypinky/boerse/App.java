@@ -18,7 +18,7 @@ public class App extends Application {
 	        Parent root = loader.load();
 	        this.scene.setRoot(root);
 	        stage.setScene(scene);
-	        stage.setTitle("Plan Auswerte Tool");
+	        stage.setTitle("Analyse Tool Depot");
 	        stage.show();
 	    }
 

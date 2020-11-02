@@ -4,7 +4,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class Company {
-	
+
+	private final String symbol;
 	private String name;
 	private String currency;
 	private String country;
@@ -12,11 +13,12 @@ public class Company {
 	private double bookvalue;
 	private double diviende;
 	private double divienderendite;
-	
+
 	private final HashMap<Date, Bookdata> history = new HashMap<>();
-	
-	public Company(String name) {
+
+	public Company(String symbol, String name) {
 		super();
+		this.symbol = symbol;
 		this.name = name;
 	}
 
@@ -79,7 +81,16 @@ public class Company {
 	public HashMap<Date, Bookdata> getHistory() {
 		return history;
 	}
-	
-	
+
+	public String getSymbol() {
+		return symbol;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder line = new StringBuilder();
+		line.append(name).append(" (Symbol: ").append(symbol).append(")");
+		return line.toString();
+	}
 
 }
