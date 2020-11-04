@@ -20,57 +20,58 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class addDialog implements Initializable {
-	
+
 	private String selectedSymbol;
-	
+
 	@FXML
 	private TextField searchPattern;
-	
+
 	@FXML
 	private ListView<Company> resultView;
-	
+
 	private mainViewController parent;
-	
+
 	public addDialog(mainViewController parent) {
 		this.parent = parent;
 	}
-	
+
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		resultView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 	}
-	
+
 	@FXML
 	public void add(ActionEvent event) {
 		Company company = collectData.getCompanyData(resultView.getSelectionModel().getSelectedItem().getSymbol());
-		this.parent.getStockMap().put(company, new Stock());
+		if (!this.parent.getStockMap().containsKey(company)) {
+			this.parent.getStockMap().put(company, new Stock());
+		}
 	}
-	
+
 	@FXML
 	public void search(ActionEvent event) {
 		Map<String, String> result = collectData.getSearchResult(searchPattern.getText());
-		if(!result.isEmpty()) {
+		if (!result.isEmpty()) {
 			resultView.getItems().clear();
-			result.forEach((key,item) ->{
-				resultView.getItems().add(new Company(key,item));
+			result.forEach((key, item) -> {
+				resultView.getItems().add(new Company(key, item));
 			});
 		}
 	}
-	
+
 	@FXML
 	public void cancel(ActionEvent event) {
 		closeStage(event);
 	}
 
-	 private void closeStage(ActionEvent event) {
-	        Node  source = (Node)  event.getSource(); 
-	        Stage stage  = (Stage) source.getScene().getWindow();
-	        stage.close();
-	    }
+	private void closeStage(ActionEvent event) {
+		Node source = (Node) event.getSource();
+		Stage stage = (Stage) source.getScene().getWindow();
+		stage.close();
+	}
 
-	 public String getSelecetSymbol() {
-		 return this.selectedSymbol;
-	 }
-
-	
+	public String getSelecetSymbol() {
+		return this.selectedSymbol;
+	}
 }
+	

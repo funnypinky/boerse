@@ -53,10 +53,10 @@ public class mainViewController implements Initializable {
 	private TableColumn<Company, Double> actPrizeCol;
 	
 	@FXML
-	private TableColumn<Company, Double> divShareCol;
+	private TableColumn<Company, String> divShareCol;
 	
 	@FXML
-	private TableColumn<Company, Double> divRenditCol;
+	private TableColumn<Company, String> divRenditCol;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -97,16 +97,39 @@ public class mainViewController implements Initializable {
 						return new SimpleStringProperty(comp.getSector());
 					}
 				});
-		sectorCol.setCellValueFactory(
+		currencyCol.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<Company, String>, ObservableValue<String>>() {
 
 					@Override
 					public ObservableValue<String> call(CellDataFeatures<Company, String> arg0) {
 						Map.Entry<Company, Stock> temp = (Map.Entry<Company, Stock>) arg0.getValue();
 						Company comp = (Company) temp.getKey();
-						return new SimpleStringProperty(comp.getSector());
+						return new SimpleStringProperty(comp.getCurrency());
 					}
 				});
+		divShareCol.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Company, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(CellDataFeatures<Company, String> arg0) {
+						Map.Entry<Company, Stock> temp = (Map.Entry<Company, Stock>) arg0.getValue();
+						Company comp = (Company) temp.getKey();
+						String formated = String.format("%.3f %s", comp.getDiviende(), comp.getCurrency());
+						return new SimpleStringProperty(formated);
+					}
+				});
+		divRenditCol.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Company, String>, ObservableValue<String>>() {
+
+					@Override
+					public ObservableValue<String> call(CellDataFeatures<Company, String> arg0) {
+						Map.Entry<Company, Stock> temp = (Map.Entry<Company, Stock>) arg0.getValue();
+						Company comp = (Company) temp.getKey();
+						String formated = String.format("%.3f %%", comp.getDivienderendite()*100);
+						return new SimpleStringProperty(formated);
+					}
+				});
+		
 	}
 
 	@FXML
