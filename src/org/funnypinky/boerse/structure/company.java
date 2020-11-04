@@ -1,7 +1,11 @@
 package org.funnypinky.boerse.structure;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class Company {
 
@@ -13,8 +17,10 @@ public class Company {
 	private double bookvalue;
 	private double diviende;
 	private double divienderendite;
+	
+	private HashMap<LocalDate, DailySeries> seriesDaily = new HashMap<>(); 
 
-	private final HashMap<Date, Bookdata> history = new HashMap<>();
+	private final HashMap<LocalDate, Bookdata> history = new HashMap<>();
 
 	public Company(String symbol, String name) {
 		super();
@@ -78,14 +84,31 @@ public class Company {
 		this.divienderendite = divienderendite;
 	}
 
-	public HashMap<Date, Bookdata> getHistory() {
+	public HashMap<LocalDate, Bookdata> getHistory() {
 		return history;
 	}
 
 	public String getSymbol() {
 		return symbol;
 	}
+	
 
+	public HashMap<LocalDate, DailySeries> getSeriesDaily() {
+		return seriesDaily;
+	}
+
+	public void setSeriesDaily(HashMap<LocalDate, DailySeries> seriesDaily) {
+		this.seriesDaily = seriesDaily;
+	}
+
+	public Double getLastPrice() {
+		List<LocalDate> time = new ArrayList<LocalDate>(this.seriesDaily.keySet());
+		Collections.sort(time);
+		DailySeries value = this.seriesDaily.get(time.get(0));
+		return value.getAdjustedClose();
+	}
+	
+	
 	@Override
 	public String toString() {
 		StringBuilder line = new StringBuilder();

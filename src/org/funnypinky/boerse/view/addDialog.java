@@ -51,6 +51,7 @@ public class addDialog implements Initializable {
 	public void add(ActionEvent event) {
 		Company company = collectData.getCompanyData(resultView.getSelectionModel().getSelectedItem().getSymbol());
 		if (!containsSymbol(company, this.parent.getStockMap())) {
+			company.setSeriesDaily(collectData.collectDailySeries(company.getSymbol()));
 			this.parent.getStockMap().put(company, new Stock());
 		}
 	}
