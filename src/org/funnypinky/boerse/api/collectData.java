@@ -11,6 +11,9 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.Map;
 
 import org.funnypinky.boerse.db.DBController;
 import org.funnypinky.boerse.structure.Company;
+import org.funnypinky.boerse.structure.DailySeries;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -39,7 +43,8 @@ public class collectData {
 	}
 
 	public static Map<String, String> getSearchResult(String pattern) {
-		String url = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + pattern + "&apikey="+ apiKey;
+		String url = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + pattern + "&apikey="
+				+ apiKey;
 		System.out.println(url);
 		HashMap<String, String> returnValue = new HashMap<>();
 		JSONArray value = new JSONArray();
@@ -92,21 +97,65 @@ public class collectData {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
+
 			}
 		} // disable for develop
-		if(jo!=null) {
-			company = new Company(jo.getString("Symbol"),jo.getString("Name"));
+		if (jo != null) {
+			company = new Company(jo.getString("Symbol"), jo.getString("Name"));
 			company.setCurrency(jo.getString("Currency"));
 			company.setCountry(jo.getString("Country"));
 			company.setSector(jo.getString("Sector"));
 			company.setDiviende(jo.getDouble("DividendPerShare"));
 			company.setBookvalue(jo.getDouble("BookValue"));
 			company.setDivienderendite(jo.getDouble("DividendYield"));
-			
 		}
-	
-return company;
+		return company;
+	}
+
+	public static HashMap<LocalDate, DailySeries> collectDailySeries(String pattern) {
+		HashMap<LocalDate, DailySeries> seriesDaily = new HashMap<>();
+		
+		String url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&keywords=" + pattern
+				+ "&apikey=" + apiKey;
+		InputStream is;
+		JSONArray value = new JSONArray();
+		JSONObject jo = null;
+		Company company = null;
+		try {
+			jo = getJSON(url);
+		} catch (IOException e) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Fehler beim abholen der Daten!");
+			alert.setContentText(e.getLocalizedMessage());
+			alert.showAndWait();
+			if (debug) {
+				BufferedReader rd;
+				try {
+					rd = new BufferedReader(
+							new FileReader(new File("T:\\ALLGEMEI\\Haesler\\workspace\\Boerse\\test_daily.txt")));
+					String jsonText = readAll(rd);
+					jo = new JSONObject(jsonText);
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+		}
+		if (jo != null) {
+			JSONObject daily = (JSONObject) jo.get("Time Series (Daily)");
+			daily.keySet().forEach(item ->{
+				DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				LocalDate date = LocalDate.parse(item.toString(),format);
+				JSONObject data = (JSONObject) daily.get(item);
+				DailySeries stack = new DailySeries(data.getDouble("1. open"), data.getDouble("2. high"), data.getDouble("3. low"), data.getDouble("4. close"), data.getDouble("5. adjusted close"), data.getDouble("7. dividend amount"));
+				seriesDaily.put(date, stack);
+			});
+		}
+		return seriesDaily;
 	}
 
 	public static void collectData() {

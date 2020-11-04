@@ -51,6 +51,10 @@ public class addDialog implements Initializable {
 	public void add(ActionEvent event) {
 		Company company = collectData.getCompanyData(resultView.getSelectionModel().getSelectedItem().getSymbol());
 		if (!containsSymbol(company, this.parent.getStockMap())) {
+<<<<<<< HEAD
+=======
+			company.setSeriesDaily(collectData.collectDailySeries(company.getSymbol()));
+>>>>>>> branch 'master' of git@github.com:funnypinky/boerse.git
 			this.parent.getStockMap().put(company, new Stock());
 		}
 	}

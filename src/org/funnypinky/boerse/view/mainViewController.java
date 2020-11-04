@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import org.funnypinky.boerse.structure.Company;
 import org.funnypinky.boerse.structure.Stock;
 
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -129,7 +130,17 @@ public class mainViewController implements Initializable {
 						return new SimpleStringProperty(formated);
 					}
 				});
-		
+		actPrizeCol.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Company, Double>, ObservableValue<Double>>() {
+
+					@Override
+					public ObservableValue<Double> call(CellDataFeatures<Company, Double> arg0) {
+						Map.Entry<Company, Stock> temp = (Map.Entry<Company, Stock>) arg0.getValue();
+						Company comp = (Company) temp.getKey();
+						
+						return new SimpleDoubleProperty(comp.getLastPrice()).asObject();
+					}
+				});
 	}
 
 	@FXML
