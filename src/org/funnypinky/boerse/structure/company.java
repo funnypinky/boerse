@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class Company {
+public class company {
 
 	private final String symbol;
 	private String name;
@@ -22,7 +22,7 @@ public class Company {
 
 	private final HashMap<LocalDate, Bookdata> history = new HashMap<>();
 
-	public Company(String symbol, String name) {
+	public company(String symbol, String name) {
 		super();
 		this.symbol = symbol;
 		this.name = name;

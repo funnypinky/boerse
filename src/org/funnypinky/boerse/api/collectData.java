@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.funnypinky.boerse.db.DBController;
-import org.funnypinky.boerse.structure.Company;
+import org.funnypinky.boerse.structure.company;
 import org.funnypinky.boerse.structure.DailySeries;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -69,12 +69,12 @@ public class collectData {
 		return returnValue;
 	}
 
-	public static Company getCompanyData(String symbol) {
+	public static company getCompanyData(String symbol) {
 		String url = "https://www.alphavantage.co/query?function=OVERVIEW&symbol=" + symbol + "&apikey=" + apiKey;
 		InputStream is;
 		JSONArray value = new JSONArray();
 		JSONObject jo = null;
-		Company company = null;
+		company company = null;
 		try {
 			jo = getJSON(url);
 		} catch (IOException e) {
@@ -101,7 +101,7 @@ public class collectData {
 			}
 		} // disable for develop
 		if (jo != null) {
-			company = new Company(jo.getString("Symbol"), jo.getString("Name"));
+			company = new company(jo.getString("Symbol"), jo.getString("Name"));
 			company.setCurrency(jo.getString("Currency"));
 			company.setCountry(jo.getString("Country"));
 			company.setSector(jo.getString("Sector"));
@@ -115,12 +115,13 @@ public class collectData {
 	public static HashMap<LocalDate, DailySeries> collectDailySeries(String pattern) {
 		HashMap<LocalDate, DailySeries> seriesDaily = new HashMap<>();
 		
-		String url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&keywords=" + pattern
+		String url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=" + pattern
 				+ "&apikey=" + apiKey;
+		System.out.println(url);
 		InputStream is;
 		JSONArray value = new JSONArray();
 		JSONObject jo = null;
-		Company company = null;
+		company company = null;
 		try {
 			jo = getJSON(url);
 		} catch (IOException e) {

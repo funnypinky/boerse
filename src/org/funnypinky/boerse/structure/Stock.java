@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class Stock {
 
-	private Company company;
+	private company company;
 	
 	private double among;
 	

@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.funnypinky.boerse.api.collectData;
-import org.funnypinky.boerse.structure.Company;
+import org.funnypinky.boerse.structure.company;
 import org.funnypinky.boerse.structure.Stock;
 
 import javafx.application.Platform;
@@ -34,7 +34,7 @@ public class addDialog implements Initializable {
 	private TextField searchPattern;
 
 	@FXML
-	private ListView<Company> resultView;
+	private ListView<company> resultView;
 
 	private mainViewController parent;
 
@@ -49,12 +49,9 @@ public class addDialog implements Initializable {
 
 	@FXML
 	public void add(ActionEvent event) {
-		Company company = collectData.getCompanyData(resultView.getSelectionModel().getSelectedItem().getSymbol());
+		company company = collectData.getCompanyData(resultView.getSelectionModel().getSelectedItem().getSymbol());
 		if (!containsSymbol(company, this.parent.getStockMap())) {
-<<<<<<< HEAD
-=======
 			company.setSeriesDaily(collectData.collectDailySeries(company.getSymbol()));
->>>>>>> branch 'master' of git@github.com:funnypinky/boerse.git
 			this.parent.getStockMap().put(company, new Stock());
 		}
 	}
@@ -76,7 +73,7 @@ public class addDialog implements Initializable {
 				if (!result.isEmpty()) {
 					resultView.getItems().clear();
 					result.forEach((key, item) -> {
-						resultView.getItems().add(new Company(key, item));
+						resultView.getItems().add(new company(key, item));
 					});
 				}
 				source.setGraphic(null);
@@ -101,9 +98,9 @@ public class addDialog implements Initializable {
 		return this.selectedSymbol;
 	}
 
-	private boolean containsSymbol(Company company, Map<Company, Stock> map) {
+	private boolean containsSymbol(company company, Map<company, Stock> map) {
 		boolean value = false;
-		for (Company item : map.keySet()) {
+		for (company item : map.keySet()) {
 			if (item.getSymbol().equals(company.getSymbol())) {
 				value = true;
 			}
