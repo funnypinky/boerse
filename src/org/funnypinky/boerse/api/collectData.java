@@ -45,7 +45,7 @@ public class collectData {
 	public static Map<String, String> getSearchResult(String pattern) {
 		String url = "https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=" + pattern + "&apikey="
 				+ apiKey;
-		System.out.println(url);
+		
 		HashMap<String, String> returnValue = new HashMap<>();
 		JSONArray value = new JSONArray();
 		try {
