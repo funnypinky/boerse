@@ -2,8 +2,12 @@ package org.funnypinky.boerse.view;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
 import org.funnypinky.boerse.structure.company;
@@ -11,8 +15,10 @@ import org.funnypinky.boerse.structure.Stock;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -23,6 +29,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.Axis;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -58,6 +71,10 @@ public class mainViewController implements Initializable {
 	
 	@FXML
 	private TableColumn<company, String> divRenditCol;
+	
+	
+	@FXML
+	private LineChart<String, Number> dailyPrice;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -67,6 +84,20 @@ public class mainViewController implements Initializable {
 			stock.getItems().addAll(stockMap.entrySet());
 		});
 
+		stock.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		stock.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+			dailyPrice.getData().clear();
+			XYChart.Series<String, Number> priceSeries = new XYChart.Series<String, Number>();
+			company temp = newSelection.getKey();
+			temp.getSeriesDaily().keySet().forEach(item ->{
+				DateTimeFormatter format = DateTimeFormatter.ISO_LOCAL_DATE;
+				
+				priceSeries.getData().add(new XYChart.Data<String, Number>(item.format(format),temp.getSeriesDaily().get(item).getAdjustedClose()));
+			});
+			dailyPrice.getData().add(priceSeries);
+			System.out.println();
+		});
+		
 		companyNameCol.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<company, String>, ObservableValue<String>>() {
 
@@ -132,12 +163,10 @@ public class mainViewController implements Initializable {
 				});
 		actPrizeCol.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<company, Double>, ObservableValue<Double>>() {
-
 					@Override
 					public ObservableValue<Double> call(CellDataFeatures<company, Double> arg0) {
 						Map.Entry<company, Stock> temp = (Map.Entry<company, Stock>) arg0.getValue();
 						company comp = (company) temp.getKey();
-						
 						return new SimpleDoubleProperty(comp.getLastPrice()).asObject();
 					}
 				});
